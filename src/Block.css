@@ -5,6 +5,9 @@
 .blockValues span {
   word-break: break-word;
 }
+.blockHeight {
+  width: 10em;
+}
 
 .version {
   color: red;
