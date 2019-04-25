@@ -5,6 +5,12 @@
 .blockValues span {
   word-break: break-word;
 }
+
+.blockHeightForm {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
 .blockHeight {
   width: 10em;
 }
