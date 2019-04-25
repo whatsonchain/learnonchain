@@ -1,0 +1,26 @@
+.blockFields span {
+    padding:0.5em;
+}
+
+.blockValues span {
+  word-break: break-word;
+}
+
+.version {
+  color: red;
+}
+.prevBlockHash {
+  color: orange
+}
+.merkleRoot {
+  color: rgb(224, 224, 70);
+}
+.timestamp {
+  color: green;
+}
+.target {
+  color: blue;
+}
+.nonce {
+  color: indigo;
+}

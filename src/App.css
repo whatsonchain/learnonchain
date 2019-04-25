@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+.main{
+  margin: 2em;
+}
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;

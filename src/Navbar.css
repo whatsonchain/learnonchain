@@ -1,0 +1,47 @@
+.navbar-brand {
+  font-family: "Ubuntu", sans-serif;
+}
+
+.menu-item {
+  width: 1em !important;
+  margin-right: 10px;
+}
+
+.navbar {
+  padding: 0px !important;
+}
+
+.properties-header {
+  width: 160px;
+  text-align: right;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.table td,
+.table th {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+}
+
+.details-table td {
+  border-top: none;
+  padding: 0.4em;
+  padding-right: 0.6em;
+}
+
+.nav-item.dropdown button {
+  background:none!important;
+  color:inherit;
+  border:none; 
+  /* padding:0!important; */
+  font: inherit;
+  /*border is optional*/
+  border-bottom:1px solid #444; 
+  cursor: pointer;
+}
+
+.monospace {
+  font-family: "Source Code Pro", monospace;
+}
