@@ -8,6 +8,7 @@ import Footer from "./Footer.js";
 import Home from "./Home.js";
 import Block from "./Block.js";
 import Hash from "./Hash.js";
+import Transaction from "./Transaction.js";
 
 
 class App extends Component {
@@ -23,6 +24,7 @@ class App extends Component {
         <Route path={'/'} exact component={Home} />
         <Route path={'/hash'} exact component={Hash} />
         <Route path={'/block'} exact component={Block} />
+        <Route path={'/transaction'} exact component={Transaction} />
     </Switch>
     </div>
     <Footer />

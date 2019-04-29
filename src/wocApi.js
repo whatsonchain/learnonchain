@@ -16,3 +16,9 @@ export function getBlockByHeight (height) {
   let path = 'block/height/' + height
   return getFromApiServerAsync(path)
 }
+
+export function getTransaction (txid) {
+  // GET GET https://api.whatsonchain.com/v1/bsv/<network>/tx/hash/<hash>
+  let path = 'tx/hash/' + txid
+  return getFromApiServerAsync(path)
+}
