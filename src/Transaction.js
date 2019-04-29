@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import HexPart from './HexPart'
 
 const wocApi = require('./wocApi')
 
@@ -36,7 +37,9 @@ class Transaction extends Component {
       <div className='card blockValues'>
         <div className='card-body'>
           <h4 className='card-title'>Original values from bitcoin node</h4>
-          <span className='version'>0{this.state.tx.version}000000</span>
+          <HexPart className='version' backgroundColor='red' info='This is the version' data={'0' + this.state.tx.version + '000000'} />
+          <HexPart className='test' backgroundColor='orange' info='Some part of the data' data={this.state.tx.hex.slice(4, 188)} />
+
           <span className='hex'>{this.state.tx.hex}</span>
 
         </div>
