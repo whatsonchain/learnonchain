@@ -20,7 +20,14 @@
   button {
     width: 100px;
     height: 47px;
+
   }
+
+  .btn-primary {
+    margin-left: 1em;
+    width: 8em;
+  }
+  
   .answer {
     color: #3567ff;
   }
