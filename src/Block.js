@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import './Block.css'
+import ReactTooltip from 'react-tooltip'
+import { Link } from 'react-router-dom'
+
 const wocApi = require('./wocApi')
 const crypto = require('crypto')
 
@@ -13,7 +16,7 @@ class Block extends Component {
   }
 
   async componentWillMount () {
-    let initialHeight = 123456
+    let initialHeight = 582995 // mined by woc
 
     this.getBlock(initialHeight)
   }
@@ -89,12 +92,14 @@ class Block extends Component {
       <div className='card blockValues'>
         <div className='card-body'>
           <h4 className='card-title'>Changed to little-endian and ready for double sha256</h4>
-          <span className='version'>{this.swapBytes(this.state.block.versionHex)}<small>(little-endian)</small></span>
-          <span className='prevBlockHash'>{this.swapBytes(this.state.block.previousblockhash)}<small>(little-endian)</small></span>
-          <span className='merkleRoot'>{this.swapBytes(this.state.block.merkleroot)}<small>(little-endian)</small></span>
-          <span className='timestamp'>{this.swapBytes(parseInt(this.state.block.time).toString(16))}<small>(hex encoded and little-endian)</small></span>
-          <span className='target'>{this.swapBytes(this.state.block.bits)}<small>(little-endian)</small></span>
-          <span className='nonce'>{this.swapBytes(parseInt(this.state.block.nonce).toString(16))}<small>(hex encoded and little-endian)</small></span>
+          <span className='version' data-tip='little-endian'>{this.swapBytes(this.state.block.versionHex)}</span>
+          <span className='prevBlockHash' data-tip='little-endian'>{this.swapBytes(this.state.block.previousblockhash)}</span>
+          <span className='merkleRoot' data-tip='little-endian'>{this.swapBytes(this.state.block.merkleroot)}</span>
+          <span className='timestamp' data-tip='hex encoded and little-endian'>{this.swapBytes(parseInt(this.state.block.time).toString(16))}</span>
+          <span className='target' data-tip='little-endian'>{this.swapBytes(this.state.block.bits)}</span>
+          <span className='nonce' data-tip='hex encoded and little-endian'>{this.swapBytes(parseInt(this.state.block.nonce).toString(16))}</span>
+          <ReactTooltip />
+          <div>You can copy and SHA256d this string using the <Link to='/hash' target='_none'>hash form</Link></div>
         </div>
       </div>
       <div>
