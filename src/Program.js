@@ -13,8 +13,6 @@ class Program extends Component {
   }
 
   static getDerivedStateFromProps (props, currentState) {
-    console.log('pointer:', currentState.pointer)
-    console.log('asmIndex:', currentState.asmIndex)
     if (currentState.lockingASM !== props.lockingASM) {
       return {
         lockingASM: props.lockingASM,
@@ -51,17 +49,19 @@ class Program extends Component {
           <div className='card-body'>
             <h2 className='card-title'>program</h2>
             <div className='ops' />
-            <div className='ops'>
-              unlocking
-              {this.state.unlockingASM.map((value, index) => {
-                return <span className={'op' + (this.state.asmIndex === index ? ' current' : '')} key={index} >{value}</span>
-              })}
-              locking
-              {this.state.lockingASM.map((value, index) => {
-                return <span className={'op' + (this.state.asmIndex === index + this.state.unlockingASM.length ? ' current' : '')} key={index} >{value}</span>
-              })}
-            </div>
+            {(this.state.unlockingASM.length > 0 ? 'unlocking' : null
+            )}
+            {this.state.unlockingASM.map((value, index) => {
+              return <span className={'op' + (this.state.asmIndex === index ? ' current' : '')} key={index} >{value}</span>
+            })}
+            {(this.state.lockingASM.length > 0 ? 'locking' : null
+            )}
+
+            {this.state.lockingASM.map((value, index) => {
+              return <span className={'op' + (this.state.asmIndex === index + this.state.unlockingASM.length ? ' current' : '')} key={index} >{value}</span>
+            })}
           </div>
+
         </div> : null)
     )
   }

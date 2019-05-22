@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Program from './Program.js'
 import Stack from './Stack.js'
-// import './Debugger.css'
+import './Debugger.css'
 
 let bsv = require('bsv')
 class Debugger extends Component {
@@ -34,14 +34,10 @@ class Debugger extends Component {
     this.setState({ stackItems: si })
   }
 
-  handleScript () {
-    let lockingScriptStr = (document.getElementById('lockingScript').value).toUpperCase()
-    let unlockingScriptStr = (document.getElementById('unlockingScript').value).toUpperCase()
-    let lockingASM = lockingScriptStr.split(' ')
-    let unlockingASM = unlockingScriptStr.split(' ')
+  resetState () {
     this.setState({
-      lockingASM: lockingASM,
-      unlockingASM: unlockingASM,
+      lockingASM: [],
+      unlockingASM: [],
       stackItems: [],
       stepNo: null,
       opPointer: null,
@@ -49,6 +45,13 @@ class Debugger extends Component {
       currentStack: null,
       scriptEnded: false
     })
+  }
+  handleScript () {
+    let lockingScriptStr = (document.getElementById('lockingScript').value).toUpperCase()
+    let unlockingScriptStr = (document.getElementById('unlockingScript').value).toUpperCase()
+    let lockingASM = lockingScriptStr.split(' ')
+    let unlockingASM = unlockingScriptStr.split(' ')
+    this.resetState()
 
     var Interpreter = bsv.Script.Interpreter
 
@@ -58,7 +61,17 @@ class Debugger extends Component {
     si.stepListener = this.debugScript
     // let script1 = bsv.Script(unlockingScriptStr)
     // console.log(script1)
-    si.verify(bsv.Script(unlockingScriptStr), bsv.Script(lockingScriptStr))
+    try {
+      si.verify(bsv.Script(unlockingScriptStr), bsv.Script(lockingScriptStr))
+    } catch (e) {
+      console.log('invalid script')
+      return
+    }
+
+    this.setState({
+      lockingASM,
+      unlockingASM
+    })
     // si.verify(bsv.Script(unlockingScriptStr),bsv.Script(lockingScriptStr), Interpreter.SCRIPT_ENABLE_MAGNETIC_OPCODES)
     // unlocking    OP_1 OP_2 OP_ADD
     // locking      OP_3 OP_EQUAL
@@ -68,11 +81,6 @@ class Debugger extends Component {
     let step = 1
     if (this.state.stepNo !== null) {
       step = this.state.stepNo + 1
-    }
-    if (this.state.opPointer > this.state.lockingASM.length + this.state.unlockingASM.length) {
-      console.log('no more steps')
-      this.setState({ scriptEnded: true })
-      return
     }
 
     this.setState({ stepNo: step })
@@ -87,6 +95,10 @@ class Debugger extends Component {
       this.setState({ currentStack: currentStack })
     }
     this.setState({ previousOpPointer: this.state.opPointer })
+
+    if (this.state.opPointer > this.state.lockingASM.length + this.state.unlockingASM.length) {
+      this.setState({ scriptEnded: true })
+    }
   }
 
   // back () {
@@ -107,18 +119,24 @@ class Debugger extends Component {
 
   render () {
     return (
-      <div className='container'>
+      <div>
         <h3>Debugger</h3>
         <div className='row'>
           <div className='col'>
-            <span>Unlocking Script <input className='script' id='unlockingScript' placeholder='unlocking script' /></span>
-            <span>Locking Script <input className='script' id='lockingScript' placeholder='locking script' /></span>
+            <label htmlFor='unlockingScript'>Unlocking Script <input className='script' id='unlockingScript' placeholder='unlocking script' /></label>
+          </div>
+          <div className='col'>
+            <label htmlFor='lockingScript'>Locking Script <input className='script' id='lockingScript' placeholder='locking script' /></label>
+          </div>
+          <div className='col'>
             <button className='btn btn-primary' onClick={this.handleScript}>load</button>
           </div>
         </div>
         <div className='row'>
           <div className='col-sm'>
             <Program className='' lockingASM={this.state.lockingASM} unlockingASM={this.state.unlockingASM} pointer={this.state.opPointer} />
+          </div>
+          <div>
             <button className='btn btn-primary' disabled={this.state.scriptEnded} onClick={this.next}>next</button>
           </div>
           <div className='col-sm'>
