@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
+    "bsv": "^0.27.1",
     "jquery": "^3.3.1",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.5",

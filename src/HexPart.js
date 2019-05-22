@@ -23,7 +23,7 @@ class HexPart extends Component {
 
     return (
       <span>
-        <a
+        <span
           style={style}
           onMouseEnter={() => { this.setState({ highlight: true }) }}
           onMouseLeave={() => { this.setState({ highlight: false }) }}
@@ -31,7 +31,7 @@ class HexPart extends Component {
           data-for={this.state.id}
         >
           {this.props.data}
-        </a>
+        </span>
         <ReactTooltip id={this.state.id} type='error'>
           <span>{this.props.info}</span>
         </ReactTooltip>

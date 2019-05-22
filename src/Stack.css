@@ -1,0 +1,10 @@
+.stack {
+    color: black;
+    margin-bottom: 1em;
+}
+.item {
+    margin: 1em;
+    /* border: 0.1em black solid; */
+    padding: 0.1em;
+    display: block;
+}
