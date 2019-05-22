@@ -47,8 +47,8 @@ class Debugger extends Component {
     })
   }
   handleScript () {
-    let lockingScriptStr = (document.getElementById('lockingScript').value).toUpperCase()
-    let unlockingScriptStr = (document.getElementById('unlockingScript').value).toUpperCase()
+    let lockingScriptStr = (document.getElementById('lockingScript').value)// .toUpperCase()
+    let unlockingScriptStr = (document.getElementById('unlockingScript').value)// .toUpperCase()
     let lockingASM = lockingScriptStr.split(' ')
     let unlockingASM = unlockingScriptStr.split(' ')
     this.resetState()
@@ -57,14 +57,16 @@ class Debugger extends Component {
 
     var si = Interpreter()
     si.flags = Interpreter.SCRIPT_VERIFY_P2SH |
+    Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID |
     Interpreter.SCRIPT_ENABLE_MAGNETIC_OPCODES | Interpreter.SCRIPT_ENABLE_MONOLITH_OPCODES
     si.stepListener = this.debugScript
     // let script1 = bsv.Script(unlockingScriptStr)
     // console.log(script1)
     try {
-      si.verify(bsv.Script(unlockingScriptStr), bsv.Script(lockingScriptStr))
+      let verified = si.verify(bsv.Script(unlockingScriptStr), bsv.Script(lockingScriptStr))
+      this.setState({ verified })
     } catch (e) {
-      console.log('invalid script')
+      console.log('Error: Invalid script: ', e)
       return
     }
 
@@ -75,6 +77,9 @@ class Debugger extends Component {
     // si.verify(bsv.Script(unlockingScriptStr),bsv.Script(lockingScriptStr), Interpreter.SCRIPT_ENABLE_MAGNETIC_OPCODES)
     // unlocking    OP_1 OP_2 OP_ADD
     // locking      OP_3 OP_EQUAL
+
+    // unlocking    OP_1 022afc20bf379bc96a2f4e9e63ffceb8652b2b6a097f63fbee6ecec2a49a48010e 03a767c7221e9f15f870f1ad9311f5ab937d79fcaeee15bb2c722bca515581b4c0 OP_2 OP_CHECKMULTISIG
+    // locking      OP_HASH160 OP_PUSHDATA1 0x16 0x748284390f9e263a4b766a75d0633c50426eb875 OP_EQUAL
   }
 
   next () {
@@ -88,7 +93,13 @@ class Debugger extends Component {
     if (currentState && currentState.pc === 0 && this.state.previousOpPointer === this.state.opPointer && this.state.stepNo > 0) {
       this.setState({ opPointer: this.state.opPointer + 1 })
     } else {
-      this.setState({ opPointer: (currentState && currentState.pc != null ? this.state.opPointer + currentState.pc : 1) })
+      let tp = 1
+      if (currentState && currentState.pc != null) {
+        tp = this.state.opPointer + currentState.pc
+      } else if (!currentState && this.state.opPointer) {
+        tp = this.state.opPointer + 1
+      }
+      this.setState({ opPointer: tp })
     }
     if (step >= 0) {
       let currentStack = this.state.stackItems[step - 1]
@@ -99,8 +110,8 @@ class Debugger extends Component {
     if (this.state.opPointer > this.state.lockingASM.length + this.state.unlockingASM.length) {
       this.setState({ scriptEnded: true })
     }
+    console.log('stack: ', JSON.stringify(this.state.stackItems))
   }
-
   // back () {
   //   let step = this.state.stepNo
   //   if (step >= 0) {
@@ -138,6 +149,7 @@ class Debugger extends Component {
           </div>
           <div>
             <button className='btn btn-primary' disabled={this.state.scriptEnded} onClick={this.next}>next</button>
+            <div className={this.state.scriptEnded ? '' : 'd-none'}>{this.state.verified ? 'Verified' : 'Did not verify'}</div>
           </div>
           <div className='col-sm'>
             <Stack currentStack={this.state.currentStack} />

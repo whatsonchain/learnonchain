@@ -22,7 +22,12 @@ class Hash extends Component {
     var data = document.getElementById('data').value
     let buffer = data
     if (this.state.convertToBinary) {
-      buffer = Buffer.from(buffer, 'hex')
+      try {
+        buffer = Buffer.from(buffer, 'hex')
+      } catch (e) {
+        console.log('Error reading hex')
+        return
+      }
     }
     var hash = (this.sha256(buffer, true))
     var results = document.getElementById('results').innerHTML

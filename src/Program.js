@@ -48,7 +48,7 @@ class Program extends Component {
         ? <div className='card program h-100'>
           <div className='card-body'>
             <h2 className='card-title'>program</h2>
-            <div className='ops' />
+            <div className='ops text-wrap' />
             {(this.state.unlockingASM.length > 0 ? 'unlocking' : null
             )}
             {this.state.unlockingASM.map((value, index) => {

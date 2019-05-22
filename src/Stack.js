@@ -18,6 +18,12 @@ class Stack extends Component {
     return null
   }
 
+  toHexString (byteArray) {
+    return Array.from(byteArray, function (byte) {
+      return ('0' + (byte & 0xFF).toString(16)).slice(-2)
+    }).join('')
+  }
+
   render () {
     return (
       <div className='card stack h-100'>
@@ -26,7 +32,7 @@ class Stack extends Component {
           <h2 className='card-title'>stack</h2>
           <div>
             {this.state.currentStack ? this.state.currentStack.stack.map((value, index) => {
-              return <span className='item' key={index} >{value[0]}</span>
+              return <span className='item' key={index} >{this.toHexString(value)}</span>
             }) : null}
           </div>
         </div>

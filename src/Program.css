@@ -1,8 +1,9 @@
 
 .program {
-    display: block;
+    /* display: block; */
     color: black;
     margin-bottom: 1em;
+    max-width: 28em;
 }
 .op {
     margin-left: 1em;
@@ -13,3 +14,4 @@
 .current {
     color: lightgreen;
 }
+
