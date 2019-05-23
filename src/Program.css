@@ -8,10 +8,10 @@
 .op {
     margin-left: 1em;
     padding: 0.1em;
-    border: 0.5px black solid;
+    /* border: 0.5px black solid; */
 }
 
 .current {
-    color: lightgreen;
+    background: rgb(122, 243, 122);
 }
 

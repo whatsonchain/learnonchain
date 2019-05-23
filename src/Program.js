@@ -5,18 +5,17 @@ class Program extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      lockingASM: props.lockingASM,
-      unlockingASM: props.unlockingASM,
+      script: props.asm,
       pointer: props.pointer,
       asmIndex: null
     }
   }
 
   static getDerivedStateFromProps (props, currentState) {
-    if (currentState.lockingASM !== props.lockingASM) {
+    // clear the state if there's no script or it's changed
+    if (!currentState.script || JSON.stringify(currentState.script) !== JSON.stringify(props.asm)) {
       return {
-        lockingASM: props.lockingASM,
-        unlockingASM: props.unlockingASM,
+        script: props.asm,
         pointer: null,
         asmIndex: null
       }
@@ -44,24 +43,15 @@ class Program extends Component {
 
   render () {
     return (
-      (this.state.lockingASM
+      (this.state.script
         ? <div className='card program h-100'>
           <div className='card-body'>
             <h2 className='card-title'>program</h2>
             <div className='ops text-wrap' />
-            {(this.state.unlockingASM.length > 0 ? 'unlocking' : null
-            )}
-            {this.state.unlockingASM.map((value, index) => {
+            {this.state.script.map((value, index) => {
               return <span className={'op' + (this.state.asmIndex === index ? ' current' : '')} key={index} >{value}</span>
             })}
-            {(this.state.lockingASM.length > 0 ? 'locking' : null
-            )}
-
-            {this.state.lockingASM.map((value, index) => {
-              return <span className={'op' + (this.state.asmIndex === index + this.state.unlockingASM.length ? ' current' : '')} key={index} >{value}</span>
-            })}
           </div>
-
         </div> : null)
     )
   }
