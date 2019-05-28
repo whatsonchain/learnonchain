@@ -29,7 +29,7 @@ class Navbar extends Component {
           <div className='collapse navbar-collapse' id='navbarSupportedContent'>
             <ul className='navbar-nav mr-auto'>
               <li className='nav-item'>
-                <Link className='nav-link' to='/home'>home</Link>
+                <Link className='nav-link' to='/'>home</Link>
               </li>
               <li className='nav-item'>
                 <Link className='nav-link' to='/hash'>hash</Link>

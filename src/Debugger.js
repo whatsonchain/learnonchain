@@ -67,8 +67,8 @@ class Debugger extends Component {
       console.log('Error: Invalid script: ', e)
       return
     }
-    console.log('this.localStackItems')
-    console.log(this.localStackItems)
+    // console.log('this.localStackItems')
+    // console.log(this.localStackItems)
     si = null
     // unlocking    OP_1 OP_2 OP_ADD
     // locking      OP_3 OP_EQUAL
@@ -106,12 +106,19 @@ class Debugger extends Component {
     return (
       <div>
         <h3>Debugger</h3>
+        <div className='pb-4'>
+          <p>This is a debugger that will allow you to step through trivial scripts and view the stack.</p>
+          <p>Paste in a lock and unlock script and press load.</p>
+          <h4>An example script</h4>
+          unlocking    <code>OP_1 OP_2 OP_ADD</code><br />
+          locking     <code>OP_3 OP_EQUAL</code><br />
+        </div>
         <div className='row'>
           <div className='col'>
-            <label htmlFor='unlockingScript'>Unlocking Script <input className='script' id='unlockingScript' placeholder='unlocking script' /></label>
+            <label htmlFor='unlockingScript'>Unlocking Script <input className='script' id='unlockingScript' /></label>
           </div>
           <div className='col'>
-            <label htmlFor='lockingScript'>Locking Script <input className='script' id='lockingScript' placeholder='locking script' /></label>
+            <label htmlFor='lockingScript'>Locking Script <input className='script' id='lockingScript' /></label>
           </div>
           <div className='col'>
             <button className='btn btn-primary' onClick={this.loadScript}>load</button>

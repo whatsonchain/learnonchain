@@ -1,0 +1,17 @@
+.transactionFields span {
+    padding:0.5em;
+}
+
+
+.version {
+    color: red;
+  }
+  .inputs {
+    color: orange
+  }
+  .outputs {
+    color: rgb(224, 224, 70);
+  }
+  .locktime {
+    color: green;
+  }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import './Block.css'
 import ReactTooltip from 'react-tooltip'
 import { Link } from 'react-router-dom'
+import { swapBytes } from './utils'
 
 const wocApi = require('./wocApi')
 const crypto = require('crypto')
@@ -29,17 +30,6 @@ class Block extends Component {
     }
   }
 
-  swapBytes (str) {
-    const result = []
-    let len = str.length - 2
-    while (len >= 0) {
-      result.push(str.substr(len, 2))
-      len -= 2
-    }
-    // https://en.bitcoin.it/wiki/Block_hashing_algorithm
-    return result.join('')
-  }
-
   sha256 (buffer) {
     var hash1 = crypto.createHash('sha256')
     hash1.update(buffer)
@@ -50,7 +40,7 @@ class Block extends Component {
     let buffer = Buffer.from(str, 'hex')
     let res = this.sha256(this.sha256(buffer))
     let resStr = res.toString('hex')
-    return this.swapBytes(resStr)
+    return swapBytes(resStr)
   }
 
   updateHeight () {
@@ -92,12 +82,12 @@ class Block extends Component {
       <div className='card blockValues'>
         <div className='card-body'>
           <h4 className='card-title'>Changed to little-endian and ready for double sha256</h4>
-          <span className='version' data-tip='little-endian'>{this.swapBytes(this.state.block.versionHex)}</span>
-          <span className='prevBlockHash' data-tip='little-endian'>{this.swapBytes(this.state.block.previousblockhash)}</span>
-          <span className='merkleRoot' data-tip='little-endian'>{this.swapBytes(this.state.block.merkleroot)}</span>
-          <span className='timestamp' data-tip='hex encoded and little-endian'>{this.swapBytes(parseInt(this.state.block.time).toString(16))}</span>
-          <span className='target' data-tip='little-endian'>{this.swapBytes(this.state.block.bits)}</span>
-          <span className='nonce' data-tip='hex encoded and little-endian'>{this.swapBytes(parseInt(this.state.block.nonce).toString(16))}</span>
+          <span className='version' data-tip='little-endian'>{swapBytes(this.state.block.versionHex)}</span>
+          <span className='prevBlockHash' data-tip='little-endian'>{swapBytes(this.state.block.previousblockhash)}</span>
+          <span className='merkleRoot' data-tip='little-endian'>{swapBytes(this.state.block.merkleroot)}</span>
+          <span className='timestamp' data-tip='hex encoded and little-endian'>{swapBytes(parseInt(this.state.block.time).toString(16))}</span>
+          <span className='target' data-tip='little-endian'>{swapBytes(this.state.block.bits)}</span>
+          <span className='nonce' data-tip='hex encoded and little-endian'>{swapBytes(parseInt(this.state.block.nonce).toString(16))}</span>
           <ReactTooltip />
           <div>You can copy and SHA256d this string using the <Link to='/hash' target='_none'>hash form</Link></div>
         </div>
@@ -106,12 +96,12 @@ class Block extends Component {
         <div className='card'>
           <div className='card-body'>
             <h4 className='card-title'>Hash of the header reversed</h4>
-            { this.sha256d(this.swapBytes(this.state.block.versionHex) +
-          this.swapBytes(this.state.block.previousblockhash) +
-          this.swapBytes(this.state.block.merkleroot) +
-          this.swapBytes(parseInt(this.state.block.time).toString(16)) +
-          this.swapBytes(this.state.block.bits) +
-          this.swapBytes(parseInt(this.state.block.nonce).toString(16))) }
+            { this.sha256d(swapBytes(this.state.block.versionHex) +
+          swapBytes(this.state.block.previousblockhash) +
+          swapBytes(this.state.block.merkleroot) +
+          swapBytes(parseInt(this.state.block.time).toString(16)) +
+          swapBytes(this.state.block.bits) +
+          swapBytes(parseInt(this.state.block.nonce).toString(16))) }
           </div>
         </div>
       </div>
