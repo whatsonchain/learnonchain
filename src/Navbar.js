@@ -10,7 +10,7 @@ class Navbar extends Component {
         <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
           <a className='navbar-brand pl-4' href='/'>
             <span>
-              <img className='header-image mr-2' width='55' height='55' src={process.env.PUBLIC_URL + '/WOC-GY-10.png'} alt='logo' />
+              <img className='header-image mr-2' width='55' src={process.env.PUBLIC_URL + '/loc-db.png'} alt='logo' />
               <span>LearnOnChain.com</span>
             </span>
           </a>
