@@ -57,7 +57,12 @@ class Hash extends Component {
   sha256d (str) {
     let buffer, res
     if (this.state.convertToBinary) {
-      buffer = Buffer.from(str, 'hex')
+      try {
+        buffer = Buffer.from(str, 'hex')
+      } catch (e) {
+        console.log('Error reading hex')
+        return
+      }
       res = this.sha256(this.sha256(buffer))
     } else {
       buffer = Buffer.from(str)
