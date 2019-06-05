@@ -8,13 +8,10 @@ class Footer extends Component {
           <div className='text-center'>
             <dl id='footer.support'>Support Development of LearnOnChain.com<dd>
               <div className='text-center'>
-                <div className='text-center'>
-                  <br />
-                  <span className='text-center'>BSV Address: </span>
-                  <a href='https://whatsonchain.com/address/bitcoincash:qq7su5mghkkamjss3g87g3eejxf8f3excuekujtlev'>
+                <span className='text-center'>BSV Address: </span>
+                <a href='https://whatsonchain.com/address/bitcoincash:qq7su5mghkkamjss3g87g3eejxf8f3excuekujtlev'>
                         QR
-                  </a>
-                </div>
+                </a>
               </div>
             </dd>
             </dl>
