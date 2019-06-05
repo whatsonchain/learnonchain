@@ -9,20 +9,60 @@ class Debugger extends Component {
     super(props)
     this.state = {
       currentStack: null,
-      scriptEnded: false
+      scriptEnded: false,
+      tx: null,
+      scriptSig: null
     }
     this.debugScript = this.debugScript.bind(this)
     this.loadScript = this.loadScript.bind(this)
     this.next = this.next.bind(this)
+    this.createP2PKH = this.createP2PKH.bind(this)
     // this.back = this.back.bind(this)
     this.lockingASM = []
     this.unlockingASM = []
     this.opPointer = null
     this.stepNo = null
     this.previousOpPointer = null
+    this.tx = null
+  }
+
+  createP2PKH () {
+    console.log('createP2PKH')
+    // first we create a transaction
+    let privateKey = new bsv.PrivateKey('cSBnVM4xvxarwGQuAfQFwqDg9k5tErHUHzgWsEfD4zdwUasvqRVY')
+    let publicKey = privateKey.publicKey
+    let fromAddress = publicKey.toAddress()
+    let toAddress = 'mrU9pEmAx26HcbKVrABvgL7AwA5fjNFoDc'
+    let scriptPubkey = bsv.Script.buildPublicKeyHashOut(fromAddress)
+    let utxo = {
+      address: fromAddress,
+      txId: 'a477af6b2667c29670467e4e0728b685ee07b240235771862318e29ddbe58458',
+      outputIndex: 0,
+      script: scriptPubkey,
+      satoshis: 100000
+    }
+    let tx = new bsv.Transaction().from(utxo).to(toAddress, 100000).sign(privateKey, 1)
+
+    // we then extract the signature from the first input
+    let inputIndex = 0
+    let signature = tx.getSignatures(privateKey, 1)[inputIndex].signature
+
+    let scriptSig = bsv.Script.buildPublicKeyHashIn(publicKey, signature)
+    const Interpreter = bsv.Script.Interpreter
+    let flags = Interpreter.SCRIPT_VERIFY_P2SH | Interpreter.SCRIPT_VERIFY_STRICTENC
+    let verified = Interpreter().verify(scriptSig, scriptPubkey, tx, inputIndex, flags)
+    this.setState({
+      tx: tx,
+      scriptSig: scriptSig
+    })
+    console.log('p2pks verified: ' + verified)
+    console.log('this.tx: ' + this.tx)
   }
 
   debugScript (step, stack, altstack) {
+    console.log('step: ', step)
+    console.log('stack: ', stack)
+    console.log('altstack: ', altstack)
     let stackItems = this.localStackItems
     stack.reverse().forEach(element => {
       let stackItem = {}
@@ -43,13 +83,27 @@ class Debugger extends Component {
     })
   }
 
+  concatScript () {
+    if (this.unlockingASM) {
+      return this.unlockingASM.concat(this.lockingASM)
+    }
+    return this.lockingASM
+  }
+
   loadScript () {
     this.localStackItems = []
+    this.lockingASM = null
+    this.unlockingASM = null
     const lockingScriptStr = (document.getElementById('lockingScript').value)
     const unlockingScriptStr = (document.getElementById('unlockingScript').value)
     // split the script for the program component
-    this.lockingASM = lockingScriptStr.split(' ')
-    this.unlockingASM = unlockingScriptStr.split(' ')
+    if (lockingScriptStr) {
+      this.lockingASM = lockingScriptStr.split(' ')
+    }
+    if (unlockingScriptStr) {
+      this.unlockingASM = unlockingScriptStr.split(' ')
+    }
+
     this.resetState()
 
     const Interpreter = bsv.Script.Interpreter
@@ -58,10 +112,21 @@ class Debugger extends Component {
     const flags = Interpreter.SCRIPT_VERIFY_P2SH |
     Interpreter.SCRIPT_ENABLE_MAGNETIC_OPCODES | Interpreter.SCRIPT_ENABLE_MONOLITH_OPCODES
     si.stepListener = this.debugScript
+    let u, l
     try {
-      let u = bsv.Script.fromASM(unlockingScriptStr)
-      let l = bsv.Script.fromASM(lockingScriptStr)
-      let verified = si.verify(u, l, null, null, flags)
+      if (unlockingScriptStr) {
+        u = bsv.Script.fromASM(unlockingScriptStr)
+      }
+      if (lockingScriptStr) {
+        l = bsv.Script.fromASM(lockingScriptStr)
+      }
+      let tx; let txIndex = null
+      if (this.state.tx) {
+        tx = this.state.tx
+        txIndex = 0
+        // l = this.state.scriptSig
+      }
+      let verified = si.verify(u, l, tx, txIndex, flags)
       this.setState({ verified })
     } catch (e) {
       console.log('Error: Invalid script: ', e)
@@ -78,6 +143,7 @@ class Debugger extends Component {
   }
 
   next () {
+    console.log('next: this.stepNo: ' + this.stepNo)
     this.stepNo += 1
     let currentState = this.localStackItems[this.stepNo - 1]
     let previousPc = null
@@ -97,7 +163,14 @@ class Debugger extends Component {
     }
     this.previousOpPointer = this.opPointer
 
-    if (this.stepNo - 1 > this.lockingASM.length + this.unlockingASM.length || this.stepNo > this.localStackItems.length) {
+    let lockingASMLength; let unlockingASMLength = 0
+    if (this.lockingASM) {
+      lockingASMLength = this.lockingASM.length
+    }
+    if (this.unlockingASM) {
+      unlockingASMLength = this.unlockingASM.length
+    }
+    if (this.stepNo - 1 > lockingASMLength + unlockingASMLength || this.stepNo > this.localStackItems.length) {
       this.setState({ scriptEnded: true })
     }
   }
@@ -112,6 +185,30 @@ class Debugger extends Component {
           <h4>An example script</h4>
           unlocking    <code>OP_1 OP_2 OP_ADD</code><br />
           locking     <code>OP_3 OP_EQUAL</code><br />
+          Create a transaction to use in the script, eg, for <code>OP_CHECKSIG</code>
+          <button className='btn btn-primary' onClick={this.createP2PKH}>create</button>
+          {this.state.tx ? (
+            <div className='card p2pkh' style={{ fontSize: '0.1em !important' }}>
+              <div>hash:{this.state.tx.hash}</div>
+              <div className='version'>version:{this.state.tx.version}</div>
+              <div>input count:{this.state.tx.inputs.length}</div>
+              {this.state.tx.inputs ? this.state.tx.inputs.map((value, index) => {
+                return <div className='inputs' key={'i_' + index}>
+                  <span>{JSON.stringify(value)}</span>
+                </div>
+              }) : ''}
+              <div>output count:{this.state.tx.outputs.length}</div>
+              {this.state.tx.outputs ? this.state.tx.outputs.map((value, index) => {
+                return <div className='outputs' key={'i_' + index}>
+                  <span>{JSON.stringify(value)}</span>
+                </div>
+              }) : ''}
+              <div className='locktime'>nLockTime:{this.state.tx.nLockTime}</div>
+              <div>scriptSig:{this.state.scriptSig.toString()}</div>
+
+            </div>
+          ) : console.log('nothig here')}
+
         </div>
         <div className='row'>
           <div className='col'>
@@ -126,7 +223,7 @@ class Debugger extends Component {
         </div>
         <div className='row'>
           <div className='col-sm'>
-            <Program className='' asm={this.unlockingASM.concat(this.lockingASM)} pointer={this.opPointer} />
+            <Program className='' asm={this.concatScript()} pointer={this.stepNo} />
           </div>
           <div>
             <button className='btn btn-primary' disabled={this.state.scriptEnded} onClick={this.next}>next</button>

@@ -1,10 +1,6 @@
   html, body {
     font-family: monospace;
   }
-  * {
-    font-size: 20px;
-    font-family: monospace;
-  }
   
   #hash {
     margin-top: 10px;

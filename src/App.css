@@ -6,6 +6,11 @@
   margin: 1.5em;
 }
 
+* {
+    font-size: 20px;
+    font-family: monospace;
+  }
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
