@@ -2,6 +2,11 @@
     padding:0.5em;
 }
 
+.txidForm {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
 
 .version {
     color: red;

@@ -15,6 +15,7 @@ class Transaction extends Component {
       tx: null
     }
     this.vinCount = null
+    this.updateTx = this.updateTx.bind(this)
   }
 
   async componentWillMount () {
@@ -25,6 +26,10 @@ class Transaction extends Component {
 
   async getTx (txid) {
     let tx = await wocApi.getTransaction(txid)
+    if (!tx) {
+      console.log('error getting tx')
+      return
+    }
     console.log('tx:', tx)
     console.log('first slice:', tx.hex.slice(0, 8))
     console.log('2nd slice:', tx.hex.slice(-8))
@@ -44,10 +49,21 @@ class Transaction extends Component {
       this.vinCount = vinVarint
     }
   }
+
+  updateTx () {
+    let txid = document.getElementById('txid').value
+    this.getTx(txid)
+  }
   render () {
     return (this.state.tx ? <div>
       <h1 className='h3'>Transaction</h1>
-      We shall examine transaction <a href={`https://whatsonchain.com/tx/${this.state.tx.txid}`}>{this.state.tx.txid}</a><br />
+      We shall examine transaction
+      <span className='txidForm'>
+        <input className='txid' id='txid' placeholder={this.state.tx.txid} onKeyDown={this.key} />
+        <button className='btn btn-primary' onClick={this.updateTx}>Update</button>
+      </span>
+
+      <a href={`https://whatsonchain.com/tx/${this.state.tx.txid}`}>{this.state.tx.txid}</a><br />
 
       The transaction header is constructed from the following fields
       <div className='card transactionFields'>
