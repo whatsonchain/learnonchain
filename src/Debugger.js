@@ -11,6 +11,7 @@ class Debugger extends Component {
       currentStack: null,
       scriptEnded: false,
       tx: null,
+      publicKey: null,
       scriptSig: null
     }
     this.debugScript = this.debugScript.bind(this)
@@ -31,6 +32,7 @@ class Debugger extends Component {
     // first we create a transaction
     let privateKey = new bsv.PrivateKey('cSBnVM4xvxarwGQuAfQFwqDg9k5tErHUHzgWsEfD4zdwUasvqRVY')
     let publicKey = privateKey.publicKey
+    console.log('publicKey:' + JSON.stringify(publicKey))
     let fromAddress = publicKey.toAddress()
     let toAddress = 'mrU9pEmAx26HcbKVrABvgL7AwA5fjNFoDc'
     let scriptPubkey = bsv.Script.buildPublicKeyHashOut(fromAddress)
@@ -53,6 +55,7 @@ class Debugger extends Component {
     let verified = Interpreter().verify(scriptSig, scriptPubkey, tx, inputIndex, flags)
     this.setState({
       tx: tx,
+      publicKey: publicKey,
       scriptSig: scriptSig
     })
     console.log('p2pks verified: ' + verified)
@@ -189,22 +192,23 @@ class Debugger extends Component {
           <button className='btn btn-primary' onClick={this.createP2PKH}>create</button>
           {this.state.tx ? (
             <div className='card p2pkh' style={{ fontSize: '0.1em !important' }}>
-              <div>hash:{this.state.tx.hash}</div>
-              <div className='version'>version:{this.state.tx.version}</div>
-              <div>input count:{this.state.tx.inputs.length}</div>
+              <div><label>hash:</label>{this.state.tx.hash}</div>
+              <div className='version'><label>version:</label>{this.state.tx.version}</div>
+              <div><label>inputs:</label>[{this.state.tx.inputs.length}]</div>
               {this.state.tx.inputs ? this.state.tx.inputs.map((value, index) => {
                 return <div className='inputs' key={'i_' + index}>
                   <span>{JSON.stringify(value)}</span>
                 </div>
               }) : ''}
-              <div>output count:{this.state.tx.outputs.length}</div>
+              <div><label>outputs:</label>[{this.state.tx.outputs.length}]</div>
               {this.state.tx.outputs ? this.state.tx.outputs.map((value, index) => {
                 return <div className='outputs' key={'i_' + index}>
                   <span>{JSON.stringify(value)}</span>
                 </div>
               }) : ''}
-              <div className='locktime'>nLockTime:{this.state.tx.nLockTime}</div>
-              <div>scriptSig:{this.state.scriptSig.toString()}</div>
+              <div className='locktime'><label>nLockTime:</label>{this.state.tx.nLockTime}</div>
+              <div><label>scriptSig:</label>{this.state.scriptSig.toString()}</div>
+              <div><label>pubKey:</label>{this.state.publicKey.toString()}</div>
 
             </div>
           ) : console.log('nothig here')}
