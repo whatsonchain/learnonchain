@@ -1,29 +1,23 @@
 import React, { Component } from 'react'
+
+import PropTypes from 'prop-types'
 import './Stack.css'
 
-const style = {
-  background: 'pink',
-  borderRadius: 10,
-  padding: 5,
-  paddingLeft: 10,
-  margin: 5,
-  zIndex: 1
-}
-
 class StackItem extends Component {
-  toHexString (byteArray) {
-    return Array.from(byteArray, function (byte) {
-      return ('0' + (byte & 0xFF).toString(16)).slice(-2)
-    }).join('')
-  }
-
   render () {
+    let val = this.props.value
+    // if (val.length > 15) {
+    //   val = val.slice(0, 6) + '...' + val.slice(-6)
+    // }
+
     return (
-      (this.props.value
-        ? <span style={style} className='item' >{this.toHexString(this.props.value)}</span>
-        : null)
+      <span className='item'>{val}</span>
     )
   }
+}
+
+StackItem.propTypes = {
+  value: PropTypes.string.isRequired
 }
 
 export default StackItem
