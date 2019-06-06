@@ -46,7 +46,7 @@ class Program extends Component {
       (this.props.asm
         ? <div className='card program h-100'>
           <div className='card-body'>
-            <h2 className='card-title'>program</h2>
+            <h3 className='card-title'>program</h3>
             <div className='ops text-wrap' />
             {this.props.asm.map((value, index) => {
               return <span className={'op' + (this.props.pointer - 1 === index ? ' current' : '')} key={index} >{value}</span>

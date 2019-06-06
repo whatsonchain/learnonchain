@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Program from './Program.js'
 import Stack from './Stack.js'
+import ScriptTx from './ScriptTx.js'
 import './Debugger.css'
 
 let bsv = require('bsv')
@@ -65,7 +66,6 @@ class Debugger extends Component {
   debugScript (step, stack, altstack) {
     console.log('step: ', step)
     console.log('stack: ', stack)
-    console.log('altstack: ', altstack)
     let stackItems = this.localStackItems
     stack.reverse().forEach(element => {
       let stackItem = {}
@@ -190,29 +190,7 @@ class Debugger extends Component {
           locking     <code>OP_3 OP_EQUAL</code><br />
           Create a transaction to use in the script, eg, for <code>OP_CHECKSIG</code>
           <button className='btn btn-primary' onClick={this.createP2PKH}>create</button>
-          {this.state.tx ? (
-            <div className='card p2pkh' style={{ fontSize: '0.1em !important' }}>
-              <div><label>hash:</label>{this.state.tx.hash}</div>
-              <div className='version'><label>version:</label>{this.state.tx.version}</div>
-              <div><label>inputs:</label>[{this.state.tx.inputs.length}]</div>
-              {this.state.tx.inputs ? this.state.tx.inputs.map((value, index) => {
-                return <div className='inputs' key={'i_' + index}>
-                  <span>{JSON.stringify(value)}</span>
-                </div>
-              }) : ''}
-              <div><label>outputs:</label>[{this.state.tx.outputs.length}]</div>
-              {this.state.tx.outputs ? this.state.tx.outputs.map((value, index) => {
-                return <div className='outputs' key={'i_' + index}>
-                  <span>{JSON.stringify(value)}</span>
-                </div>
-              }) : ''}
-              <div className='locktime'><label>nLockTime:</label>{this.state.tx.nLockTime}</div>
-              <div><label>scriptSig:</label>{this.state.scriptSig.toString()}</div>
-              <div><label>pubKey:</label>{this.state.publicKey.toString()}</div>
-
-            </div>
-          ) : console.log('nothig here')}
-
+          <ScriptTx tx={this.state.tx} scriptSig={this.state.scriptSig} publicKey={this.state.publicKey} />
         </div>
         <div className='row'>
           <div className='col'>
@@ -231,7 +209,9 @@ class Debugger extends Component {
           </div>
           <div>
             <button className='btn btn-primary' disabled={this.state.scriptEnded} onClick={this.next}>next</button>
-            <div className={this.state.scriptEnded ? '' : 'd-none'}>{this.state.verified ? 'Verified' : 'Did not verify'}</div>
+            {
+              this.state.scriptEnded ? this.state.verified ? <div className='verified'>verified &#10003;</div> : <div className='notVerified'>did not verify &#10005;</div> : null
+            }
           </div>
           <div className='col-sm'>
             <Stack currentStack={this.state.currentStack} />

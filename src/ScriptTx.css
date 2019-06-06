@@ -1,0 +1,8 @@
+.scriptTx {
+    font-size: 0.8em !important;
+    background: honeydew;
+}
+
+.scriptTx label {
+  font-weight: bold;
+}

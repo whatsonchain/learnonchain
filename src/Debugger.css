@@ -6,13 +6,12 @@
       margin: 1em;
   }
 
-  .p2pkh {
-      font-size: 0.8em !important;
-      background: honeydew;
+  .verified {
+      color: green;
   }
 
-  .p2pkh label {
-    font-weight: bold;
-}
+  .notVerified {
+      color: red;
+  }
 
   

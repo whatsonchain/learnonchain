@@ -2,10 +2,36 @@
     color: black;
     margin-bottom: 1em;
     max-width: 28em;
+    z-index: -1;
+
 }
 .item {
     margin: 1em;
     /* border: 0.1em black solid; */
     padding: 0.1em;
     display: block;
+}
+
+.holder {
+    border: 10px solid lightblue;
+    height: 200px;
+    width: 200px;
+    position:relative;
+    margin:10px;
+    border-radius: 10px;
+    z-index: -12;
+
+    display: flex;
+    flex-direction: column-reverse;
+
+} 
+.mask {
+    position: absolute;
+    top:-10px;
+    left:-10px;
+    width:200%;
+    height: 75%;
+    background-color:#fff;
+    z-index: -1;
+
 }
