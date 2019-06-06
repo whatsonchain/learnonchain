@@ -21,7 +21,7 @@
 
 .holder {
     border: 10px solid lightblue;
-    height: 200px;
+    min-height: 200px;
     width: 500px;
     position:relative;
     margin:10px;

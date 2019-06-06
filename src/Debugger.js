@@ -9,7 +9,9 @@ class Debugger extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      localStackItems: [],
       currentStack: null,
+      opPointer: 0,
       scriptEnded: false,
       tx: null,
       publicKey: null,
@@ -22,6 +24,7 @@ class Debugger extends Component {
     // this.back = this.back.bind(this)
     this.lockingASM = []
     this.unlockingASM = []
+    this.totalASMLength = []
     this.opPointer = null
     this.stepNo = null
     this.previousOpPointer = null
@@ -64,16 +67,19 @@ class Debugger extends Component {
   }
 
   debugScript (step, stack, altstack) {
-    console.log('step: ', step)
-    console.log('stack: ', stack)
-    let stackItems = this.localStackItems
+    console.log(step)
+    console.log(stack)
+
+    let stackItems = []
     stack.reverse().forEach(element => {
       let stackItem = {}
       stackItem.pc = step.pc
       stackItem.stack = stack
       stackItems.push(stackItem)
     })
-    this.localStackItems = stackItems
+    let tempStack = this.state.localStackItems
+    tempStack.push(stackItems)
+    this.setState({ localStackItems: tempStack })
   }
 
   resetState () {
@@ -81,8 +87,14 @@ class Debugger extends Component {
     this.stepNo = null
     this.previousOpPointer = null
     this.setState({
+      localStackItems: [],
       currentStack: null,
-      scriptEnded: false
+      opPointer: 0,
+      scriptEnded: false,
+      tx: null,
+      publicKey: null,
+      scriptSig: null
+
     })
   }
 
@@ -94,7 +106,7 @@ class Debugger extends Component {
   }
 
   loadScript () {
-    this.localStackItems = []
+    // this.localStackItems = []
     this.lockingASM = null
     this.unlockingASM = null
     const lockingScriptStr = (document.getElementById('lockingScript').value)
@@ -107,6 +119,13 @@ class Debugger extends Component {
       this.unlockingASM = unlockingScriptStr.split(' ')
     }
 
+    this.totalASMLength = 0 // length of both ASM scripts
+    if (this.lockingASM) {
+      this.totalASMLength += this.lockingASM.length
+    }
+    if (this.unlockingASM) {
+      this.totalASMLength += this.unlockingASM.length
+    }
     this.resetState()
 
     const Interpreter = bsv.Script.Interpreter
@@ -127,7 +146,6 @@ class Debugger extends Component {
       if (this.state.tx) {
         tx = this.state.tx
         txIndex = 0
-        // l = this.state.scriptSig
       }
       let verified = si.verify(u, l, tx, txIndex, flags)
       this.setState({ verified })
@@ -135,8 +153,6 @@ class Debugger extends Component {
       console.log('Error: Invalid script: ', e)
       return
     }
-    // console.log('this.localStackItems')
-    // console.log(this.localStackItems)
     si = null
     // unlocking    OP_1 OP_2 OP_ADD
     // locking      OP_3 OP_EQUAL
@@ -146,34 +162,19 @@ class Debugger extends Component {
   }
 
   next () {
-    console.log('next: this.stepNo: ' + this.stepNo)
-    this.stepNo += 1
-    let currentState = this.localStackItems[this.stepNo - 1]
-    let previousPc = null
-    if (this.stepNo > 1) {
-      previousPc = this.localStackItems[this.stepNo - 2] ? this.localStackItems[this.stepNo - 2].pc : null
-    }
-    // if there's a current state and the pc is 0 and it's not the first script then add the previous pc to the current one
-    if (currentState) {
-      if (currentState.pc !== previousPc) { // pc hasn't changed
-        this.opPointer += 1
-      }
+    this.opPointer += 1
+    let tempCurrentStack = null
+
+    if (this.state.localStackItems) {
+      tempCurrentStack = this.state.localStackItems[this.opPointer - 1]
     }
 
-    if (this.stepNo !== null) {
-      let currentStack = this.localStackItems[this.stepNo - 1]
-      this.setState({ currentStack: currentStack })
-    }
-    this.previousOpPointer = this.opPointer
+    this.setState({
+      currentStack: tempCurrentStack ? tempCurrentStack[0] : null,
+      opPointer: this.opPointer
+    })
 
-    let lockingASMLength; let unlockingASMLength = 0
-    if (this.lockingASM) {
-      lockingASMLength = this.lockingASM.length
-    }
-    if (this.unlockingASM) {
-      unlockingASMLength = this.unlockingASM.length
-    }
-    if (this.stepNo - 1 > lockingASMLength + unlockingASMLength || this.stepNo > this.localStackItems.length) {
+    if (this.opPointer > this.totalASMLength) {
       this.setState({ scriptEnded: true })
     }
   }
@@ -205,7 +206,7 @@ class Debugger extends Component {
         </div>
         <div className='row'>
           <div className='col-sm'>
-            <Program className='' asm={this.concatScript()} pointer={this.stepNo} />
+            <Program className='' asm={this.concatScript()} pointer={this.state.opPointer} />
           </div>
           <div>
             <button className='btn btn-primary' disabled={this.state.scriptEnded} onClick={this.next}>next</button>
