@@ -1,6 +1,6 @@
 {
-  "name": "testnewreactapp",
-  "version": "0.1.0",
+  "name": "learnonchain",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
