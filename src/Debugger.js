@@ -5,6 +5,9 @@ import ScriptTx from './ScriptTx.js'
 import './Debugger.css'
 
 let bsv = require('bsv')
+
+const Interpreter = bsv.Script.Interpreter
+
 class Debugger extends Component {
   constructor (props) {
     super(props)
@@ -26,8 +29,6 @@ class Debugger extends Component {
     this.unlockingASM = []
     this.totalASMLength = []
     this.opPointer = null
-    this.stepNo = null
-    this.previousOpPointer = null
     this.tx = null
   }
 
@@ -84,17 +85,11 @@ class Debugger extends Component {
 
   resetState () {
     this.opPointer = null
-    this.stepNo = null
-    this.previousOpPointer = null
     this.setState({
       localStackItems: [],
       currentStack: null,
       opPointer: 0,
-      scriptEnded: false,
-      tx: null,
-      publicKey: null,
-      scriptSig: null
-
+      scriptEnded: false
     })
   }
 
@@ -106,7 +101,6 @@ class Debugger extends Component {
   }
 
   loadScript () {
-    // this.localStackItems = []
     this.lockingASM = null
     this.unlockingASM = null
     const lockingScriptStr = (document.getElementById('lockingScript').value)
@@ -127,8 +121,6 @@ class Debugger extends Component {
       this.totalASMLength += this.unlockingASM.length
     }
     this.resetState()
-
-    const Interpreter = bsv.Script.Interpreter
 
     let si = new Interpreter()
     const flags = Interpreter.SCRIPT_VERIFY_P2SH |
