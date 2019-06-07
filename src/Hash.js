@@ -92,7 +92,7 @@ class Hash extends Component {
             </label>
             <button className='btn btn-primary' onClick={this.hash256}>SHA256</button>
             <button className='btn btn-primary' onClick={this.hash256d}>SHA256d</button>
-            <label>Convert to binary before encoding <input type='checkbox' name='binary' checked={this.state.convertToBinary} onChange={this.handleCheckboxChange} /></label>
+            <label>Convert hexadecimal string to binary before encoding <input type='checkbox' name='binary' checked={this.state.convertToBinary} onChange={this.handleCheckboxChange} /></label>
           </div>
         </div>
         <div id='hash'>&nbsp;</div>
