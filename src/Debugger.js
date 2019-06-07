@@ -209,23 +209,26 @@ class Debugger extends Component {
           </div>
         </div>
         <div>
-          <a class='btn btn-primary' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample'>
+          <a className='btn btn-primary' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample'>
     example scripts </a>
           <div className='collapse' id='collapseExample'>
             <h4>Example scripts</h4>
-            <dl class='row'>
-              <dt class='col-sm-3'>Simple</dt>
-              <dd class='col-sm-9'>unlocking    <code>OP_1 OP_2 OP_ADD</code><br />
+            <dl className='row'>
+              <dt className='col-sm-3'>Simple</dt>
+              <dd className='col-sm-9'>unlocking    <code>OP_1 OP_2 OP_ADD</code><br />
                                  locking     <code>OP_3 OP_EQUAL</code><br /></dd>
-              <dt class='col-sm-3'>Hash Puzzle</dt>
-              <dd class='col-sm-9'>unlocking    <code>0223078d2942df62c45621d209fab84ea9a7a23346201b7727b9b45a29c4e76f5e</code><br />
+              <dt className='col-sm-3'>Hash Puzzle</dt>
+              <dd className='col-sm-9'>unlocking    <code>0223078d2942df62c45621d209fab84ea9a7a23346201b7727b9b45a29c4e76f5e</code><br />
                                  locking     <code>OP_HASH160 88d9931ea73d60eaf7e5671efc0552b912911f2a OP_EQUAL</code><br /></dd>
-              <dt class='col-sm-3'>Checksig</dt><dd class='col-sm-9'><strong>requires a transaction</strong><br />
+              <dt className='col-sm-3'>Checksig</dt><dd className='col-sm-9'><strong>requires a transaction</strong><br />
                                  unlocking    <code>3045022100948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e90220616f6ced5ab219fe1bfcf9802994b3ce72afbb2db0c4b653a74c9f03fb99323f01 0223078d2942df62c45621d209fab84ea9a7a23346201b7727b9b45a29c4e76f5e</code><br />
                                  locking     <code>OP_DUP OP_HASH160 88d9931ea73d60eaf7e5671efc0552b912911f2a OP_EQUALVERIFY OP_CHECKSIG</code><br /></dd>
-              <dt class='col-sm-3'>r Puzzle</dt>
-              <dd class='col-sm-9'>unlocking    <code>3045022100948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e90220616f6ced5ab219fe1bfcf9802994b3ce72afbb2db0c4b653a74c9f03fb99323f01</code><br />
+              <dt className='col-sm-3'>r Puzzle</dt>
+              <dd className='col-sm-9'>unlocking    <code>3045022100948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e90220616f6ced5ab219fe1bfcf9802994b3ce72afbb2db0c4b653a74c9f03fb99323f01</code><br />
                                  locking     <code>OP_3 OP_SPLIT OP_NIP OP_1 OP_SPLIT OP_SWAP OP_SPLIT OP_DROP 00948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e9 OP_EQUAL</code><br /></dd>
+              <dt className='col-sm-3'>r Puzzle Hash</dt>
+              <dd className='col-sm-9'>unlocking    <code>3045022100948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e90220616f6ced5ab219fe1bfcf9802994b3ce72afbb2db0c4b653a74c9f03fb99323f01</code><br />
+                                 locking     <code>OP_3 OP_SPLIT OP_NIP OP_1 OP_SPLIT OP_SWAP OP_SPLIT OP_DROP OP_HASH160 40dfe2f5712253fa6bb2e3923278bd077bf03668 OP_EQUAL</code><br /></dd>
             </dl>
           </div>
         </div>

@@ -7,14 +7,13 @@ class Footer extends Component {
         <div className='container'>
           <div className='text-center'>
             <dl id='footer.support'>Support Development of LearnOnChain.com<dd>
+              <a href='https://t.me/joinchat/FfE6-EjZhoTHwhDhZH6F-w' target='_blank'>Join Telegram Group</a><br />
               <div className='text-center'>
                 <span className='text-center'>BSV Address: </span>
                 <a href='https://whatsonchain.com/address/bitcoincash:qq7su5mghkkamjss3g87g3eejxf8f3excuekujtlev'>
                         QR
                 </a><br />
-
-                <i class='fab fa-telegram' />
-                <a href='https://t.me/learnonchain' target='_blank'>Join Telegram Group</a>
+                Paymail: loc@moneybutton.com<br />
               </div>
             </dd>
             </dl>
