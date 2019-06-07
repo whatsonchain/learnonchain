@@ -11,7 +11,10 @@ class Footer extends Component {
                 <span className='text-center'>BSV Address: </span>
                 <a href='https://whatsonchain.com/address/bitcoincash:qq7su5mghkkamjss3g87g3eejxf8f3excuekujtlev'>
                         QR
-                </a>
+                </a><br />
+
+                <i class='fab fa-telegram' />
+                <a href='https://t.me/learnonchain' target='_blank'>Join Telegram Group</a>
               </div>
             </dd>
             </dl>
