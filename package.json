@@ -3,7 +3,8 @@
   "version": "0.1.1",
   "private": true,
   "dependencies": {
-    "axios": "^0.18.0",
+    "@moneybutton/react-money-button": "^0.21.11",
+    "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "bsv": "^0.27.1",
     "jquery": "^3.3.1",

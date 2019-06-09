@@ -25,9 +25,9 @@ class Stack extends Component {
     }
 
     return (
-      <div className='card stack h-100'>
+      <div className='card stack '>
         <div className='card-body'>
-          <h3 className='card-title'>stack</h3>
+          <h3 className='card-title text-center'>stack</h3>
           <div className='holder'>
             <div className='mask' />
             <ReactCSSTransitionGroup

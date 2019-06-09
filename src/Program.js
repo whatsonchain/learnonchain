@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import Card from 'react-bootstrap/Card'
+
 import './Program.css'
 
 class Program extends Component {
@@ -44,15 +46,19 @@ class Program extends Component {
   render () {
     return (
       (this.props.asm
-        ? <div className='card program h-100'>
-          <div className='card-body'>
-            <h3 className='card-title'>program</h3>
+        ? <Card id='loadedScript' style={{ height: '30rem', width: '28rem', overflowY: 'scroll' }}>
+          <Card.Header className='card-title'>Loaded Script (Unlocking + locking)</Card.Header>
+          <Card.Body className='ops text-wrap' style={{ background: '#e9ecef' }}>
             <div className='ops text-wrap' />
             {this.props.asm.map((value, index) => {
               return <span className={'op' + (this.props.pointer - 1 === index ? ' current' : '')} key={index} >{value}</span>
             })}
-          </div>
-        </div> : null)
+          </Card.Body>
+        </Card>
+        : <Card id='loadedScript' style={{ height: '20rem' }}>
+          <Card.Header>Loaded Script (Unlocking + locking)</Card.Header>
+
+        </Card>)
     )
   }
 }

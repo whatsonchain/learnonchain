@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import Program from './Program.js'
 import Stack from './Stack.js'
 import ScriptTx from './ScriptTx.js'
+import Card from 'react-bootstrap/Card'
+import InputGroup from 'react-bootstrap/InputGroup'
+import FormControl from 'react-bootstrap/FormControl'
+import Button from 'react-bootstrap/Button'
 import './Debugger.css'
 
 let bsv = require('bsv')
@@ -18,8 +22,13 @@ class Debugger extends Component {
       scriptEnded: false,
       tx: null,
       publicKey: null,
-      scriptSig: null
+      scriptSig: null,
+      lockingScriptInputValue: '',
+      unlockingScriptInputValue: ''
     }
+    this.handleLockingScriptInputChange = this.handleLockingScriptInputChange.bind(this)
+    this.handleUnlockingScriptInputChange = this.handleUnlockingScriptInputChange.bind(this)
+
     this.debugScript = this.debugScript.bind(this)
     this.loadScript = this.loadScript.bind(this)
     this.next = this.next.bind(this)
@@ -100,11 +109,27 @@ class Debugger extends Component {
     return this.lockingASM
   }
 
+  tryScript (example) {
+    const lockingScriptStr = (document.getElementById(example + '-locking').textContent)
+    const unlockingScriptStr = (document.getElementById(example + '-unlocking').textContent)
+    this.setState({ lockingScriptInputValue: lockingScriptStr })
+    this.setState({ unlockingScriptInputValue: unlockingScriptStr })
+    // window.scrollTo(0, '#collapseExample')
+  }
+
+  handleLockingScriptInputChange (event) {
+    this.setState({ lockingScriptInputValue: event.target.value })
+  }
+
+  handleUnlockingScriptInputChange (event) {
+    this.setState({ unlockingScriptInputValue: event.target.value })
+  }
+
   loadScript () {
     this.lockingASM = null
     this.unlockingASM = null
-    const lockingScriptStr = (document.getElementById('lockingScript').value)
-    const unlockingScriptStr = (document.getElementById('unlockingScript').value)
+    const lockingScriptStr = this.state.lockingScriptInputValue
+    const unlockingScriptStr = this.state.unlockingScriptInputValue
     // split the script for the program component
     if (lockingScriptStr) {
       this.lockingASM = lockingScriptStr.split(' ')
@@ -173,7 +198,7 @@ class Debugger extends Component {
 
   render () {
     return (
-      <div>
+      <div className='mb-6'>
         <h3>Debugger</h3>
         <div className='pb-4'>
           <p>This is a debugger that will allow you to step through trivial scripts and view the stack.</p>
@@ -183,23 +208,82 @@ class Debugger extends Component {
           <button className='btn btn-primary' onClick={this.createP2PKH}>create</button>
           <ScriptTx tx={this.state.tx} scriptSig={this.state.scriptSig} publicKey={this.state.publicKey} />
         </div>
-        <div className='row'>
-          <div className='col'>
-            <label htmlFor='unlockingScript'>Unlocking Script <input className='script' id='unlockingScript' /></label>
-          </div>
-          <div className='col'>
-            <label htmlFor='lockingScript'>Locking Script <input className='script' id='lockingScript' /></label>
-          </div>
-          <div className='col'>
-            <button className='btn btn-primary' onClick={this.loadScript}>load</button>
-          </div>
-        </div>
+        <Card id='loadScript'>
+          <Card.Header>Enter Scripts</Card.Header>
+          <Card.Body ref='enterScripts'>
+            <div className='mb-3'>
+              <InputGroup size='sm'>
+                <InputGroup.Prepend>
+                  <InputGroup.Text >Unlocking Script</InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl id='unlockingScript' as='textarea' aria-label='Unlocking Script' value={this.state.unlockingScriptInputValue} onChange={this.handleUnlockingScriptInputChange} />
+              </InputGroup>
+              <br />
+              <InputGroup size='sm'>
+                <InputGroup.Prepend>
+                  <InputGroup.Text >Locking Script</InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl id='lockingScript' as='textarea' aria-label='Locking Script' value={this.state.lockingScriptInputValue} onChange={this.handleLockingScriptInputChange} />
+              </InputGroup>
+              <Button className='float-right' variant='primary' onClick={this.loadScript} >Load</Button>
+              <div >
+                <a className='btn btn-info' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample'>
+    Examples </a>
+
+                <div className='collapse' id='collapseExample' style={{ width: '100%' }}>
+                  <Card style={{ width: '100%' }}>
+                    <Card.Body>
+
+                      {/* <h4>Example scripts</h4> */}
+                      <dl className='row'>
+                        <dt className='col-sm-3'>
+                          <a className='btn btn-success btn-sm' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample' onClick={() => this.tryScript('simple')}> Try </a>
+                          Simple
+                        </dt>
+                        <dd className='col-sm-9'>unlocking    <code id='simple-unlocking'>OP_1 OP_2 OP_ADD</code><br />
+                                 locking     <code id='simple-locking'>OP_3 OP_EQUAL</code><br /><hr /></dd>
+                        <dt className='col-sm-3'>
+                          <a className='btn btn-success btn-sm' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample' onClick={() => this.tryScript('hash')}> Try </a>
+                          Hash Puzzle
+                        </dt>
+                        <dd className='col-sm-9'>unlocking    <code id='hash-unlocking'>0223078d2942df62c45621d209fab84ea9a7a23346201b7727b9b45a29c4e76f5e</code><br />
+                                 locking     <code id='hash-locking'>OP_HASH160 88d9931ea73d60eaf7e5671efc0552b912911f2a OP_EQUAL</code><br /><hr /></dd>
+                        <dt className='col-sm-3'>
+                          <a className='btn btn-success btn-sm' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample' onClick={() => this.tryScript('checksig')}> Try </a>
+                          Checksig
+                        </dt>
+                        <dd className='col-sm-9'><strong>requires a transaction</strong><br />
+                                 unlocking    <code id='checksig-unlocking'>3045022100948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e90220616f6ced5ab219fe1bfcf9802994b3ce72afbb2db0c4b653a74c9f03fb99323f01 0223078d2942df62c45621d209fab84ea9a7a23346201b7727b9b45a29c4e76f5e</code><br />
+                                 locking     <code id='checksig-locking'>OP_DUP OP_HASH160 88d9931ea73d60eaf7e5671efc0552b912911f2a OP_EQUALVERIFY OP_CHECKSIG</code><br /><hr /></dd>
+                        <dt className='col-sm-3'>
+                          <a className='btn btn-success btn-sm' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample' onClick={() => this.tryScript('r-puzzle')}> Try </a>
+                          r Puzzle
+                        </dt>
+                        <dd className='col-sm-9'>unlocking    <code id='r-puzzle-unlocking'>3045022100948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e90220616f6ced5ab219fe1bfcf9802994b3ce72afbb2db0c4b653a74c9f03fb99323f01</code><br />
+                                 locking     <code id='r-puzzle-locking'>OP_3 OP_SPLIT OP_NIP OP_1 OP_SPLIT OP_SWAP OP_SPLIT OP_DROP 00948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e9 OP_EQUAL</code><br /><hr /></dd>
+                        <dt className='col-sm-3'>
+                          <a className='btn btn-success btn-sm' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample' onClick={() => this.tryScript('r-puzzle-hash')}> Try </a>
+                          r Puzzle Hash
+                        </dt>
+                        <dd className='col-sm-9'>unlocking    <code id='r-puzzle-hash-unlocking'>3045022100948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e90220616f6ced5ab219fe1bfcf9802994b3ce72afbb2db0c4b653a74c9f03fb99323f01</code><br />
+                                 locking     <code id='r-puzzle-hash-locking'>OP_3 OP_SPLIT OP_NIP OP_1 OP_SPLIT OP_SWAP OP_SPLIT OP_DROP OP_HASH160 40dfe2f5712253fa6bb2e3923278bd077bf03668 OP_EQUAL</code><br /></dd>
+                      </dl>
+                    </Card.Body>
+                  </Card>
+
+                </div>
+
+              </div>
+            </div>
+          </Card.Body>
+        </Card>
+        <br />
         <div className='row'>
           <div className='col-sm'>
             <Program className='' asm={this.concatScript()} pointer={this.state.opPointer} />
           </div>
           <div>
-            <button className='btn btn-primary' disabled={this.state.scriptEnded} onClick={this.next}>next</button>
+            <button className='btn btn-primary' disabled={this.state.scriptEnded} onClick={this.next}>Execute</button>
             {
               this.state.scriptEnded ? this.state.verified ? <div className='verified'>verified &#10003;</div> : <div className='notVerified'>did not verify &#10005;</div> : null
             }
@@ -208,30 +292,7 @@ class Debugger extends Component {
             <Stack currentStack={this.state.currentStack} />
           </div>
         </div>
-        <div>
-          <a className='btn btn-primary' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample'>
-    example scripts </a>
-          <div className='collapse' id='collapseExample'>
-            <h4>Example scripts</h4>
-            <dl className='row'>
-              <dt className='col-sm-3'>Simple</dt>
-              <dd className='col-sm-9'>unlocking    <code>OP_1 OP_2 OP_ADD</code><br />
-                                 locking     <code>OP_3 OP_EQUAL</code><br /></dd>
-              <dt className='col-sm-3'>Hash Puzzle</dt>
-              <dd className='col-sm-9'>unlocking    <code>0223078d2942df62c45621d209fab84ea9a7a23346201b7727b9b45a29c4e76f5e</code><br />
-                                 locking     <code>OP_HASH160 88d9931ea73d60eaf7e5671efc0552b912911f2a OP_EQUAL</code><br /></dd>
-              <dt className='col-sm-3'>Checksig</dt><dd className='col-sm-9'><strong>requires a transaction</strong><br />
-                                 unlocking    <code>3045022100948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e90220616f6ced5ab219fe1bfcf9802994b3ce72afbb2db0c4b653a74c9f03fb99323f01 0223078d2942df62c45621d209fab84ea9a7a23346201b7727b9b45a29c4e76f5e</code><br />
-                                 locking     <code>OP_DUP OP_HASH160 88d9931ea73d60eaf7e5671efc0552b912911f2a OP_EQUALVERIFY OP_CHECKSIG</code><br /></dd>
-              <dt className='col-sm-3'>r Puzzle</dt>
-              <dd className='col-sm-9'>unlocking    <code>3045022100948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e90220616f6ced5ab219fe1bfcf9802994b3ce72afbb2db0c4b653a74c9f03fb99323f01</code><br />
-                                 locking     <code>OP_3 OP_SPLIT OP_NIP OP_1 OP_SPLIT OP_SWAP OP_SPLIT OP_DROP 00948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e9 OP_EQUAL</code><br /></dd>
-              <dt className='col-sm-3'>r Puzzle Hash</dt>
-              <dd className='col-sm-9'>unlocking    <code>3045022100948c67a95f856ae875a48a2d104df9d232189897a811178a715617d4b090a7e90220616f6ced5ab219fe1bfcf9802994b3ce72afbb2db0c4b653a74c9f03fb99323f01</code><br />
-                                 locking     <code>OP_3 OP_SPLIT OP_NIP OP_1 OP_SPLIT OP_SWAP OP_SPLIT OP_DROP OP_HASH160 40dfe2f5712253fa6bb2e3923278bd077bf03668 OP_EQUAL</code><br /></dd>
-            </dl>
-          </div>
-        </div>
+
       </div>
     )
   }

@@ -7,7 +7,7 @@
 }
 
 * {
-    font-size: 20px;
+    font-size: 18px;
     font-family: monospace;
   }
 
@@ -41,4 +41,4 @@
   }
 }
 
-body { padding-bottom: 170px; }
+/* body { padding-bottom: 170px; } */

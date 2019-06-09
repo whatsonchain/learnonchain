@@ -21,10 +21,11 @@
 
 .holder {
     border: 10px solid lightblue;
-    min-height: 200px;
-    width: 500px;
+    min-height: 15rem;
+    width: 25rem;
     position:relative;
     margin:10px;
+    margin-bottom:0px;
     border-radius: 10px;
     z-index: -12;
 
@@ -36,7 +37,7 @@
     position: absolute;
     top: -10px;
     left: -10px;
-    width: 500px;
+    width: 25rem;
     height: 75%;
     background-color:#fff;
     z-index: -1;
