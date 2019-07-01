@@ -128,8 +128,8 @@ class Debugger extends Component {
   loadScript () {
     this.lockingASM = null
     this.unlockingASM = null
-    const lockingScriptStr = this.state.lockingScriptInputValue
-    const unlockingScriptStr = this.state.unlockingScriptInputValue
+    const lockingScriptStr = this.state.lockingScriptInputValue.trim()
+    const unlockingScriptStr = this.state.unlockingScriptInputValue.trim()
     // split the script for the program component
     if (lockingScriptStr) {
       this.lockingASM = lockingScriptStr.split(' ')
