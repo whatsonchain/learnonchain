@@ -120,7 +120,7 @@ class Debugger extends Component {
     this.setState({ unlockingScriptInputValue: event.target.value })
   }
 
-  resetStateAndLoadScript(){
+  resetStateAndLoadScript () {
     this.lockingASM = []
     this.unlockingASM = []
     this.totalASMLength = []
@@ -130,20 +130,20 @@ class Debugger extends Component {
       localStackItems: [],
       currentStack: null,
       opPointer: 0,
-      scriptEnded: false,
-    },() => {
-        this.loadScript()
+      scriptEnded: false
+    }, () => {
+      this.loadScript()
     })
-}
+  }
 
   loadScript () {
-    console.log("Stack Length: "+this.state.localStackItems.length)
+    console.log('Stack Length: ' + this.state.localStackItems.length)
     this.lockingASM = null
     this.unlockingASM = null
     const lockingScriptStr = this.state.lockingScriptInputValue.trim()
     const unlockingScriptStr = this.state.unlockingScriptInputValue.trim()
 
-    if(lockingScriptStr.length===0||unlockingScriptStr.length===0)return;
+    if (lockingScriptStr.length === 0 || unlockingScriptStr.length === 0) return
 
     // split the script for the program component
     if (lockingScriptStr) {
@@ -217,7 +217,6 @@ class Debugger extends Component {
         <div className='pb-4'>
           <p>This is a debugger that will allow you to step through trivial scripts and view the stack.</p>
           <p>Paste in a lock and unlock script and press load.</p>
-          <p className='text-warning'>Please reload the page before loading a new script.</p>
 
           Create a transaction to use in the script, eg, for <code>OP_CHECKSIG</code>
           <button className='btn btn-primary' onClick={this.createP2PKH}>create</button>
