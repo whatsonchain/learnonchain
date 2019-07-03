@@ -142,7 +142,9 @@ class Debugger extends Component {
     this.unlockingASM = null
     const lockingScriptStr = this.state.lockingScriptInputValue.trim()
     const unlockingScriptStr = this.state.unlockingScriptInputValue.trim()
+
     if(lockingScriptStr.length===0||unlockingScriptStr.length===0)return;
+
     // split the script for the program component
     if (lockingScriptStr) {
       this.lockingASM = lockingScriptStr.split(' ')
@@ -215,6 +217,7 @@ class Debugger extends Component {
         <div className='pb-4'>
           <p>This is a debugger that will allow you to step through trivial scripts and view the stack.</p>
           <p>Paste in a lock and unlock script and press load.</p>
+          <p className='text-warning'>Please reload the page before loading a new script.</p>
 
           Create a transaction to use in the script, eg, for <code>OP_CHECKSIG</code>
           <button className='btn btn-primary' onClick={this.createP2PKH}>create</button>
