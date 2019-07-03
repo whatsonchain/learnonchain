@@ -26,11 +26,16 @@ class Debugger extends Component {
       lockingScriptInputValue: '',
       unlockingScriptInputValue: ''
     }
+    this.lockingASM = []
+    this.unlockingASM = []
+    this.totalASMLength = []
+    this.opPointer = null
+    this.tx = null
     this.handleLockingScriptInputChange = this.handleLockingScriptInputChange.bind(this)
     this.handleUnlockingScriptInputChange = this.handleUnlockingScriptInputChange.bind(this)
-
     this.debugScript = this.debugScript.bind(this)
     this.loadScript = this.loadScript.bind(this)
+    this.resetStateAndLoadScript = this.resetStateAndLoadScript.bind(this)
     this.next = this.next.bind(this)
     this.createP2PKH = this.createP2PKH.bind(this)
     // this.back = this.back.bind(this)
@@ -76,7 +81,7 @@ class Debugger extends Component {
     console.log('this.tx: ' + this.tx)
   }
 
-  debugScript (step, stack, altstack) {
+  debugScript (step, stack) {
     console.log(step)
     console.log(stack)
 
@@ -90,16 +95,6 @@ class Debugger extends Component {
     let tempStack = this.state.localStackItems
     tempStack.push(stackItems)
     this.setState({ localStackItems: tempStack })
-  }
-
-  resetState () {
-    this.opPointer = null
-    this.setState({
-      localStackItems: [],
-      currentStack: null,
-      opPointer: 0,
-      scriptEnded: false
-    })
   }
 
   concatScript () {
@@ -125,11 +120,31 @@ class Debugger extends Component {
     this.setState({ unlockingScriptInputValue: event.target.value })
   }
 
+  resetStateAndLoadScript(){
+    this.lockingASM = []
+    this.unlockingASM = []
+    this.totalASMLength = []
+    this.opPointer = null
+    this.tx = null
+    this.setState({
+      localStackItems: [],
+      currentStack: null,
+      opPointer: 0,
+      scriptEnded: false,
+    },() => {
+        this.loadScript()
+    })
+}
+
   loadScript () {
+    console.log("Stack Length: "+this.state.localStackItems.length)
     this.lockingASM = null
     this.unlockingASM = null
     const lockingScriptStr = this.state.lockingScriptInputValue.trim()
     const unlockingScriptStr = this.state.unlockingScriptInputValue.trim()
+
+    if(lockingScriptStr.length===0||unlockingScriptStr.length===0)return;
+
     // split the script for the program component
     if (lockingScriptStr) {
       this.lockingASM = lockingScriptStr.split(' ')
@@ -145,7 +160,6 @@ class Debugger extends Component {
     if (this.unlockingASM) {
       this.totalASMLength += this.unlockingASM.length
     }
-    this.resetState()
 
     let si = new Interpreter()
     const flags = Interpreter.SCRIPT_VERIFY_P2SH |
@@ -226,7 +240,7 @@ class Debugger extends Component {
                 </InputGroup.Prepend>
                 <FormControl id='lockingScript' as='textarea' aria-label='Locking Script' value={this.state.lockingScriptInputValue} onChange={this.handleLockingScriptInputChange} />
               </InputGroup>
-              <Button className='float-right' variant='primary' onClick={this.loadScript} >Load</Button>
+              <Button className='float-right' variant='primary' onClick={this.resetStateAndLoadScript} >Load</Button>
               <div >
                 <a className='btn btn-info' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample'>
     Examples </a>
