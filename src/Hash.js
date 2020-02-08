@@ -20,7 +20,7 @@ class Hash extends Component {
     document.getElementById('results').innerHTML = results
   }
 
-  sha256 (buffer, tohex = false) {
+  sha256 () {
     var data = document.getElementById('data').value
     var hash = bsv.crypto.Hash.sha256(Buffer.from(data)).toString('hex')
     var results = document.getElementById('results').innerHTML
