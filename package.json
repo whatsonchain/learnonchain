@@ -6,7 +6,7 @@
     "@moneybutton/react-money-button": "^0.38.4",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
-    "bsv": "^0.27.1",
+    "bsv": "^1.5.4",
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1",
     "react": "^16.8.6",
